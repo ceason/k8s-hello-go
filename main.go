@@ -9,7 +9,7 @@ var calls = 0
 
 func HelloWorld(w http.ResponseWriter, r *http.Request) {
 	calls++
-	fmt.Fprintf(w, "9:55pm: Hello again, world! You have called me %d times.\n", calls)
+	fmt.Fprintf(w, "4:32pm: Hello again, world! You have called me %d times.\n", calls)
 }
 
 func main() {
