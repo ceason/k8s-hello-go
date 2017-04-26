@@ -3,17 +3,28 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"log"
+	"time"
+	"math/rand"
 )
 
-var calls = 0
-
 func HelloWorld(w http.ResponseWriter, r *http.Request) {
-	calls++
-	fmt.Fprintf(w, "Hello <name>. Demo this rocks! You have called me %d times.\n", calls)
+	// collect prometheus metrics
+	rpcRequests.Inc()
+	start := time.Now()
+	defer func() {
+		durationMs := float64(time.Since(start).Nanoseconds()) / 1e6
+		rpcDurations.Observe(durationMs)
+	}()
+
+	time.Sleep(time.Duration(rand.Int63n(50)) * time.Millisecond)
+
+	// "business logic" for service
+	fmt.Fprint(w, "Hello <name>. Demo this rocks!")
 }
 
 func main() {
 	http.HandleFunc("/", HelloWorld)
-	http.ListenAndServe(":8184", nil)
-	fmt.Printf("Started server at http://localhost%v.\n", ":8184")
+	log.Printf("Starting server at http://localhost%v.\n", ":8184")
+	log.Fatal(http.ListenAndServe(":8184", nil))
 }
