@@ -5,6 +5,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"net/http"
 	"log"
+	"time"
 )
 
 var (
@@ -33,10 +34,15 @@ func init() {
 	prometheus.MustRegister(rpcDurations)
 	prometheus.MustRegister(rpcRequests)
 
-
-
 	go func() {
 		log.Printf("Starting metrics exporter at http://localhost%v.\n", ":9102")
 		log.Fatal(http.ListenAndServe(":9102", promhttp.Handler()))
 	}()
+}
+
+
+func observeRequest(startTime time.Time) {
+	rpcRequests.Inc()
+	durationMs := float64(time.Since(startTime).Nanoseconds()) / 1e6
+	rpcDurations.Observe(durationMs)
 }
