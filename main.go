@@ -16,7 +16,7 @@ func HelloWorld(w http.ResponseWriter, r *http.Request) {
 	time.Sleep(time.Duration(rand.Int63n(50)) * time.Millisecond)
 
 	// "business logic" for service
-	fmt.Fprint(w, "Hello <name >!")
+	fmt.Fprint(w, "Hello < name >!")
 }
 
 func main() {
