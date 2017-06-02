@@ -10,13 +10,9 @@ import (
 
 func HelloWorld(w http.ResponseWriter, r *http.Request) {
 	// collect prometheus metrics
-	rpcRequests.Inc()
-	start := time.Now()
-	defer func() {
-		durationMs := float64(time.Since(start).Nanoseconds()) / 1e6
-		rpcDurations.Observe(durationMs)
-	}()
+	defer observeRequest(time.Now())
 
+	// random sleep to simulate service actually doing something
 	time.Sleep(time.Duration(rand.Int63n(50)) * time.Millisecond)
 
 	// "business logic" for service
